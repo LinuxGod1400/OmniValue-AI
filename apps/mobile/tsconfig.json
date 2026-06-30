@@ -1,0 +1,14 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/types" },
+    { "path": "../../packages/config" },
+    { "path": "../../packages/utils" }
+  ]
+}

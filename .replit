@@ -1,6 +1,40 @@
+modules = ["nodejs-20"]
 [agent]
 expertMode = true
 stack = "BEST_EFFORT_FALLBACK"
 
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start Backend"
+
+[[workflows.workflow]]
+name = "Start Backend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd apps/api && npx tsx src/index.ts"
+waitForPort = 3000
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["node", "apps/api/dist/index.js"]
+build = ["bash", "-c", "cd apps/api && npx tsc --project tsconfig.json && cd ../.. && npx tsc --project packages/types/tsconfig.json && npx tsc --project packages/config/tsconfig.json && npx tsc --project packages/utils/tsconfig.json"]
