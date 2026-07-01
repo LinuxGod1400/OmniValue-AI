@@ -28,10 +28,25 @@ aiRouter.post('/analyze', async (req, res) => {
     return;
   }
 
-  const { userId } = req as AuthRequest;
+  const { userId } = req as unknown as AuthRequest;
   const { imageUrl, itemId } = parsed.data;
 
-  const analysis = await analyzeItemImage(client, imageUrl, env.OPENAI_MODEL);
+  let analysis;
+  try {
+    analysis = await analyzeItemImage(client, imageUrl, env.OPENAI_MODEL);
+  } catch (err) {
+    const openAiErr = err as { status?: number; code?: string; message?: string };
+    if (openAiErr.status === 429 || openAiErr.code === 'insufficient_quota') {
+      res.status(402).json({ success: false, error: { code: 'QUOTA_EXCEEDED', message: 'OpenAI quota exceeded — please add billing credits to your OpenAI account.' } });
+      return;
+    }
+    if (openAiErr.status === 401) {
+      res.status(502).json({ success: false, error: { code: 'AI_AUTH_ERROR', message: 'OpenAI API key is invalid.' } });
+      return;
+    }
+    res.status(502).json({ success: false, error: { code: 'AI_ERROR', message: openAiErr.message ?? 'AI analysis failed.' } });
+    return;
+  }
 
   // Persist analysis to item if itemId provided
   if (itemId) {
