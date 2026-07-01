@@ -1,0 +1,3 @@
+- [Prisma version pinning](prisma-version.md) — must stay on Prisma v5; v7 broke schema URL and PrismaClient export.
+- [exactOptionalPropertyTypes Prisma fix](prisma-optional-types.md) — tsconfig strict mode requires explicit null coercion before Prisma writes.
+- [Package install method](package-install.md) — pnpm workspaces non-functional; use installLanguagePackages sandbox or npm install at root.

@@ -38,3 +38,9 @@ externalPort = 80
 deploymentTarget = "autoscale"
 run = ["node", "apps/api/dist/index.js"]
 build = ["bash", "-c", "cd apps/api && npx tsc --project tsconfig.json && cd ../.. && npx tsc --project packages/types/tsconfig.json && npx tsc --project packages/config/tsconfig.json && npx tsc --project packages/utils/tsconfig.json"]
+
+[userenv]
+
+[userenv.shared]
+JWT_SECRET = "62a5db884ded0aa375671e1cb2d416c1bc2f2917f1a40e05585ed7072839cfe10019bb6d55901b90b9d61a7ca2cd0286bec39587b029224fd7c8e70d1466e166"
+UPLOAD_DIR = "uploads"

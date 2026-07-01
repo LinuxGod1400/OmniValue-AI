@@ -1,33 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Redirect } from 'expo-router';
+import { useAuth } from '@/contexts/auth';
+import { View, ActivityIndicator } from 'react-native';
 import { useColors } from '@/hooks/useColors';
 
-export default function HomeScreen() {
+export default function Root() {
+  const { isLoading, isAuthenticated } = useAuth();
   const colors = useColors();
 
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>OmniValue AI</Text>
-      <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-        Foundation ready — start building features
-      </Text>
-    </View>
-  );
-}
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-});
+  return <Redirect href={isAuthenticated ? '/(tabs)' : '/(auth)/login'} />;
+}

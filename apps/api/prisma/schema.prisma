@@ -1,6 +1,3 @@
-// OmniValue AI — Prisma Schema
-// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,15 +7,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─── Models ───────────────────────────────────────────────────────────────────
-// Add domain models here as features are built.
-
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  displayName String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  profile       Profile?
+  items         Item[]
+  images        Image[]
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  displayName String?
+  bio         String?
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Item {
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  description    String?
+  category       String?
+  estimatedValue Float?
+  currency       String   @default("USD")
+  aiAnalysis     Json?
+  imageUrl       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images         Image[]
+
+  @@index([userId])
+  @@map("items")
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String?
+  filename  String
+  mimeType  String
+  size      Int
+  url       String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item?    @relation(fields: [itemId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("images")
 }
