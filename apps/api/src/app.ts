@@ -42,7 +42,15 @@ export function createApp(env: ApiEnv): express.Application {
   // Serve uploaded files statically
   app.use('/uploads', express.static(path.resolve(env.UPLOAD_DIR)));
 
-  // Routes
+  // Public info routes (no auth required)
+  app.get('/', (_req, res) => {
+    res.json({
+      name: 'OmniValue AI API',
+      version: process.env['npm_package_version'] ?? '0.1.0',
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+    });
+  });
   app.use('/health', healthRouter);
   app.use('/auth', authRouter);
   app.use('/api/v1/profile', profileRouter);

@@ -14,18 +14,29 @@ const env = loadApiEnv({
   MAX_FILE_SIZE_MB: '10',
 });
 
-describe('GET /health', () => {
-  const app = createApp(env);
+const app = createApp(env);
 
+describe('GET /', () => {
+  it('returns API info with name, version, status, and timestamp', async () => {
+    const res = await request(app).get('/');
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe('OmniValue AI API');
+    expect(res.body.version).toBeDefined();
+    expect(res.body.status).toBe('ok');
+    expect(res.body.timestamp).toBeDefined();
+    expect(() => new Date(res.body.timestamp as string)).not.toThrow();
+  });
+});
+
+describe('GET /health', () => {
   it('returns 200 with status ok', async () => {
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(res.body.timestamp).toBeDefined();
   });
 
-  it('returns a timestamp in ISO format', async () => {
+  it('returns exactly { status: "ok" }', async () => {
     const res = await request(app).get('/health');
-    expect(() => new Date(res.body.timestamp as string)).not.toThrow();
+    expect(res.body).toEqual({ status: 'ok' });
   });
 });
