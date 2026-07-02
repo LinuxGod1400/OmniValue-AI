@@ -21,11 +21,14 @@ export default function SettingsScreen() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['/api/v1/profile'],
     queryFn: () => apiCall<Profile>('/api/v1/profile'),
-    onSuccess: (d: Profile) => {
-      setDisplayName(d.displayName ?? '');
-      setBio(d.bio ?? '');
-    },
   });
+
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.displayName ?? '');
+      setBio(profile.bio ?? '');
+    }
+  }, [profile]);
 
   const updateMutation = useMutation({
     mutationFn: (body: object) => apiCall('/api/v1/profile', { method: 'PUT', body }),

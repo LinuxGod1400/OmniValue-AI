@@ -68,6 +68,8 @@
     "cors": "^2.8.6",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
+    "expo-image-picker": "^57.0.1",
+    "expo-secure-store": "^57.0.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",

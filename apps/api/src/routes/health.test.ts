@@ -7,8 +7,11 @@ const env = loadApiEnv({
   NODE_ENV: 'test',
   PORT: '3001',
   DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+  JWT_SECRET: 'test-secret-at-least-32-characters-long!!',
   CORS_ORIGINS: 'http://localhost:8081',
   LOG_LEVEL: 'error',
+  UPLOAD_DIR: '/tmp/test-uploads',
+  MAX_FILE_SIZE_MB: '10',
 });
 
 describe('GET /health', () => {
